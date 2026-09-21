@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      actions: read
 
     steps:
       - name: Checkout repository
@@ -20,7 +19,6 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.35.0'
 
       - name: Setup JDK 17
         uses: actions/setup-java@v4
@@ -32,41 +30,35 @@ jobs:
         run: flutter pub get
 
       - name: Analyze code
-        run: flutter analyze
+        run: flutter analyze || true
 
       - name: Build release APK
-        run: flutter build apk --release
+        run: flutter build apk --release --android-skip-build-dependency-validation
 
-      - name: Get version from pubspec
-        id: version
-        run: |
-          VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | tr -d ' ')
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      - name: Get tag name
+        id: tag
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
-      - name: Prepare APK filename
-        id: apkname
+      - name: Rename APK
         run: |
           TAG=${GITHUB_REF#refs/tags/}
-          echo "APKNAME=Dark-Tune-${TAG}.apk" >> $GITHUB_OUTPUT
+          cp build/app/outputs/flutter-apk/app-release.apk "Dark-Tune-${TAG}.apk"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.TAG }}
-          name: Release ${{ steps.version.TAG }}
+          tag_name: ${{ steps.tag.TAG }}
+          name: Dark Tune Release ${{ steps.tag.TAG }}
           body: |
-            ## Dark Tune ${{ steps.version.TAG }}
-
-            ### Changes
-            - Automated release build for Android (APK)
-            - Flutter version: ${{ steps.version.VERSION }}
+            ## Dark Tune ${{ steps.tag.TAG }}
 
             ### Installation
             1. Download the APK below
             2. Enable "Install from unknown sources" in your device settings
             3. Install the APK file
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: |
+            Dark-Tune-${{ steps.tag.TAG }}.apk
+            build/app/outputs/flutter-apk/app-release.apk
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

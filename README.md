@@ -36,8 +36,13 @@ Dark Tune is a cross platform app for music streaming made with Flutter(Android,
 
 Choose one source for Android APK. Note: you won't be able to update from cross-build APK sources.
 
+### Latest Release
+
 <a href="https://github.com/harryboy50/dark-tune/releases/latest"><img src="https://github.com/harryboy50/dark-tune/blob/main/don_github.png" width="250"></a>
-<a href="https://f-droid.org/packages/com.anandnet.darktune"><img src="https://github.com/harryboy50/dark-tune/blob/main/down_fdroid.png" width="250"></a> 
+
+<a href="https://f-droid.org/packages/com.anandnet.darktune"><img src="https://github.com/harryboy50/dark-tune/blob/main/down_fdroid.png" width="250"></a>
+
+> The GitHub button above directs to the **latest release page** where the APK file is available for download. Click it, then click the APK asset to download and install. 
 
 # Release Process
 
