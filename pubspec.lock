@@ -404,10 +404,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
+      sha256: ba03d03bcaa2f6cb7bd920e3b5027181db75ab524f8891c8bc3aa603885b8055
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.1"
+    version: "6.3.3"
   gtk:
     dependency: transitive
     description:
@@ -464,14 +464,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.3.0"
-  ionicons:
+  ionicons_plus:
     dependency: "direct main"
     description:
-      name: ionicons
-      sha256: "5496bc65a16115ecf05b15b78f494ee4a8869504357668f0a11d689e970523cf"
+      name: ionicons_plus
+      sha256: "9f5a837f1a0df204f3d11fc4a8adbd870c5239e21b25e8df68504e227084e86f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.2"
+    version: "0.2.5"
   jni:
     dependency: "direct main"
     description:
@@ -1323,4 +1323,4 @@ packages:
     version: "2.3.7"
 sdks:
   dart: ">=3.10.0-0 <4.0.0"
-  flutter: ">=3.24.0"
+  flutter: ">=3.35.0"

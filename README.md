@@ -33,11 +33,36 @@ Dark Tune is a cross platform app for music streaming made with Flutter(Android,
 
 
 # Download
-* Pleass choose one source for android apk. you won't be able to update from cross build apk source.
 
-<a href="https://github.com/anandnet/darktune/releases/latest"><img src ="https://github.com/anandnet/darktune/blob/main/don_github.png" width = "250"></a> <a href= "https://f-droid.org/packages/com.anandnet.darktune"><img src = "https://github.com/anandnet/darktune/blob/main/down_fdroid.png" width = '250'></a></a> 
+Choose one source for Android APK. Note: you won't be able to update from cross-build APK sources.
 
-# Translation
+<a href="https://github.com/harryboy50/dark-tune/releases/latest"><img src="https://github.com/harryboy50/dark-tune/blob/main/don_github.png" width="250"></a>
+<a href="https://f-droid.org/packages/com.anandnet.darktune"><img src="https://github.com/harryboy50/dark-tune/blob/main/down_fdroid.png" width="250"></a> 
+
+# Release Process
+
+To create a new release with APK distribution:
+
+1. Update version in `pubspec.yaml`:
+   ```yaml
+   version: 1.12.2+27
+   ```
+
+2. Commit and tag:
+   ```bash
+   git add .
+   git commit -m "Release v1.12.2"
+   git tag v1.12.2
+   git push origin main
+   git push origin v1.12.2
+   ```
+
+3. The GitHub Actions workflow (`release.yml`) automatically:
+   - Builds the release APK
+   - Creates a GitHub Release
+   - Attaches the APK as a release asset
+
+The download button above always points to the latest release.
 <a href="https://hosted.weblate.org/engage/harmony-music/">
 <img src="https://hosted.weblate.org/widget/harmony-music/project-translations/multi-auto.svg" alt="Translation status" />
 </a>
