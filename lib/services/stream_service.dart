@@ -10,9 +10,11 @@ class StreamProvider {
 
   static Future<StreamProvider> fetch(String videoId) async {
     final yt = YoutubeExplode();
-    
+
     try {
-      final res = await yt.videos.streamsClient.getManifest(videoId);
+      // yt.videos.streams is the current name for this client (older
+      // versions of the library called it streamsClient).
+      final res = await yt.videos.streams.getManifest(videoId);
       final audio = res.audioOnly;
 
       // YouTube sometimes serves a manifest with zero playable audio-only
@@ -35,8 +37,17 @@ class StreamProvider {
                   audioCodec:
                       e.audioCodec.contains('mp') ? Codec.mp4a : Codec.opus,
                   bitrate: e.bitrate.bitsPerSecond,
-                  duration: e.duration ?? 0,
-                  loudnessDb: e.loudnessDb,
+                  // v3.x's AudioOnlyStreamInfo has no `duration` getter at
+                  // all (confirmed against the library's actual source) --
+                  // it was specific to the old fork. This field is only
+                  // used for cosmetic display in the "song info" dialog,
+                  // which already falls back to the song's own known
+                  // duration when this is 0/missing, so it's safe to drop.
+                  duration: 0,
+                  // The upstream library doesn't expose a loudness value
+                  // (that was specific to the old anandnet fork); normalize
+                  // against a neutral 0 instead of reading a removed field.
+                  loudnessDb: 0,
                   url: e.url.toString(),
                   size: e.size.totalBytes))
               .toList());
@@ -46,11 +57,11 @@ class StreamProvider {
           playable: false,
           statusMSG: "networkError",
         );
-      } else if (e is VideoUnplayableException) {
-        return StreamProvider(
-          playable: false,
-          statusMSG: e.reason ?? "Song is unplayable",
-        );
+        // VideoRequiresPurchaseException and VideoUnavailableException both
+        // extend VideoUnplayableException in the current library, so the
+        // more specific checks must come first -- otherwise they'd always
+        // be caught by the generic VideoUnplayableException branch below
+        // and their own branches would never run.
       } else if (e is VideoRequiresPurchaseException) {
         return StreamProvider(
           playable: false,
@@ -60,6 +71,13 @@ class StreamProvider {
         return StreamProvider(
           playable: false,
           statusMSG: "Song is unavailable",
+        );
+      } else if (e is VideoUnplayableException) {
+        // There's no separate `.reason` field on this exception -- the
+        // reason is already embedded in `.message`.
+        return StreamProvider(
+          playable: false,
+          statusMSG: e.message,
         );
       } else if (e is YoutubeExplodeException) {
         return StreamProvider(
@@ -72,6 +90,12 @@ class StreamProvider {
           statusMSG: "Unknown error occurred",
         );
       }
+    } finally {
+      // Every fetch() call used to leak its YoutubeHttpClient (sockets
+      // never released) because this was never called -- across a long
+      // listening session that adds up and can eventually make playback
+      // fail/slow down for reasons unrelated to any single song.
+      yt.close();
     }
   }
 

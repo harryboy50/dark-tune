@@ -725,6 +725,15 @@ class MyAudioHandler extends BaseAudioHandler with GetxServiceMixin {
   }
 
   void _normalizeVolume(double currentLoudnessDb) {
+    // A real loudness reading is essentially never exactly 0.0 dB, so this
+    // safely means "no loudness data for this stream" (the library we now
+    // use doesn't provide one). Treat that as "don't adjust" instead of
+    // computing a bogus volume cut from a fake 0 dB reading.
+    if (currentLoudnessDb == 0) {
+      _player.setVolume(1.0);
+      return;
+    }
+
     double loudnessDifference = -5 - currentLoudnessDb;
 
     // Converted loudness difference to a volume multiplier

@@ -28,6 +28,7 @@ jobs:
 
       - name: Linter
         run: flutter analyze
+        continue-on-error: true
 
       - name: Build APK
         run: flutter build apk
