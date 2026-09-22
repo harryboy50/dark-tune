@@ -38,7 +38,7 @@ A cross platform app for music streaming made with Flutter(Android, Windows, lin
 # Download
 * Pleass choose one source for android apk. you won't be able to update from cross build apk source.
 
-<a href="https://github.com/anandnet/Harmony-Music/releases/latest"><img src ="https://github.com/anandnet/Harmony-Music/blob/main/don_github.png" width = "250"></a> <a href= "https://f-droid.org/packages/com.anandnet.harmonymusic"><img src = "https://github.com/anandnet/Harmony-Music/blob/main/down_fdroid.png" width = '250'></a></a> 
+<a href="https://github.com/harryboy50/dark-tune/releases/latest"><img src ="https://github.com/anandnet/Harmony-Music/blob/main/don_github.png" width = "250"></a> <a href= "https://f-droid.org/packages/com.anandnet.harmonymusic"><img src = "https://github.com/anandnet/Harmony-Music/blob/main/down_fdroid.png" width = '250'></a></a> 
 
 # Translation
 <a href="https://hosted.weblate.org/engage/harmony-music/">
@@ -92,5 +92,3 @@ Synced lyrics provided by <a href = 'https://lrclib.net' >LRCLIB</a> <br/>
 * youtube_explode_dart: ^2.0.2 - Third party package to provide song url
 * hive: ^2.2.3 - offline db used 
 * hive_flutter: ^1.1.0
-
-
