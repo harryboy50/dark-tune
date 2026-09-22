@@ -1,4 +1,4 @@
-package com.anandnet.harmonymusic
+package com.anandnet.darktune
 
 import com.ryanheise.audioservice.AudioServiceActivity
 

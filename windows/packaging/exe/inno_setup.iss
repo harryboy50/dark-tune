@@ -6,10 +6,10 @@ AppPublisher=anandnet
 AppPublisherURL=https://github.com/anandnet/Harmony-Music
 AppSupportURL=https://github.com/anandnet/Harmony-Music
 AppUpdatesURL=https://github.com/anandnet/Harmony-Music
-DefaultDirName={autopf}\harmonymusic
+DefaultDirName={autopf}\darktune
 DisableProgramGroupPage=yes
 OutputDir=.
-OutputBaseFilename=harmonymusic-1.12.2
+OutputBaseFilename=darktune-1.12.2
 Compression=lzma
 SolidCompression=yes
 SetupIconFile=..\..\windows\runner\resources\app_icon.ico
@@ -26,13 +26,13 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\..\build\windows\x64\runner\Release\harmonymusic.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\build\windows\x64\runner\Release\darktune.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\Dark Tune"; Filename: "{app}\harmonymusic.exe"
-Name: "{autodesktop}\Dark Tune"; Filename: "{app}\harmonymusic.exe"; Tasks: desktopicon
+Name: "{autoprograms}\Dark Tune"; Filename: "{app}\darktune.exe"
+Name: "{autodesktop}\Dark Tune"; Filename: "{app}\darktune.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\harmonymusic.exe"; Description: "{cm:LaunchProgram,{#StringChange('Dark Tune', '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\darktune.exe"; Description: "{cm:LaunchProgram,{#StringChange('Dark Tune', '&', '&&')}}"; Flags: nowait postinstall skipifsilent

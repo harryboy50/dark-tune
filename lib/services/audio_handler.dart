@@ -466,46 +466,62 @@ class MyAudioHandler extends BaseAudioHandler with GetxServiceMixin {
         }
 
         mediaItem.add(currentSong);
-        final streamInfo = await futureStreamInfo;
-        if (songIndex != currentIndex) {
-          return;
-        } else if (!streamInfo.playable) {
-          currentSongUrl = null;
-          isSongLoading = false;
-          Get.find<PlayerController>().notifyPlayError(streamInfo.statusMSG);
-          playbackState.add(playbackState.value.copyWith(
-              processingState: AudioProcessingState.error,
-              errorCode: 404,
-              errorMessage: streamInfo.statusMSG));
-          return;
-        }
-        currentSongUrl = currentSong.extras!['url'] = streamInfo.audio!.url;
-        playbackState
-            .add(playbackState.value.copyWith(queueIndex: currentIndex));
-        await _playList.add(_createAudioSource(currentSong));
-
-        isSongLoading = false;
-        if (loudnessNormalizationEnabled && GetPlatform.isAndroid) {
-          _normalizeVolume(streamInfo.audio!.loudnessDb);
-        }
-
-        if (restoreSession) {
-          if (!GetPlatform.isDesktop) {
-            final position = extras['position'];
-            await _player.load();
-            await _player.seek(
-              Duration(
-                milliseconds: position,
-              ),
-            );
-            await _player.seek(
-              Duration(
-                milliseconds: position,
-              ),
-            );
+        try {
+          final streamInfo = await futureStreamInfo;
+          if (songIndex != currentIndex) {
+            return;
+          } else if (!streamInfo.playable) {
+            currentSongUrl = null;
+            isSongLoading = false;
+            Get.find<PlayerController>().notifyPlayError(streamInfo.statusMSG);
+            playbackState.add(playbackState.value.copyWith(
+                processingState: AudioProcessingState.error,
+                errorCode: 404,
+                errorMessage: streamInfo.statusMSG));
+            return;
           }
-        } else {
-          await _player.play();
+          currentSongUrl = currentSong.extras!['url'] = streamInfo.audio!.url;
+          playbackState
+              .add(playbackState.value.copyWith(queueIndex: currentIndex));
+          await _playList.add(_createAudioSource(currentSong));
+
+          isSongLoading = false;
+          if (loudnessNormalizationEnabled && GetPlatform.isAndroid) {
+            _normalizeVolume(streamInfo.audio!.loudnessDb);
+          }
+
+          if (restoreSession) {
+            if (!GetPlatform.isDesktop) {
+              final position = extras['position'];
+              await _player.load();
+              await _player.seek(
+                Duration(
+                  milliseconds: position,
+                ),
+              );
+              await _player.seek(
+                Duration(
+                  milliseconds: position,
+                ),
+              );
+            }
+          } else {
+            await _player.play();
+          }
+        } catch (e) {
+          // Without this, any unexpected failure while resolving/loading the
+          // stream (bad response shape, decoder hiccup, etc.) left
+          // isSongLoading stuck at true forever -- an endless spinner with
+          // nothing ever actually playing.
+          printERROR("playByIndex failed: $e");
+          if (songIndex == currentIndex) {
+            currentSongUrl = null;
+            isSongLoading = false;
+            Get.find<PlayerController>()
+                .notifyPlayError("Unable to play this song");
+            playbackState.add(playbackState.value
+                .copyWith(processingState: AudioProcessingState.error));
+          }
         }
         break;
 
@@ -549,26 +565,36 @@ class MyAudioHandler extends BaseAudioHandler with GetxServiceMixin {
         await _playList.clear();
         mediaItem.add(currMed);
         queue.add([currMed]);
-        final streamInfo = (await futureStreamInfo);
-        if (!streamInfo.playable) {
+        try {
+          final streamInfo = (await futureStreamInfo);
+          if (!streamInfo.playable) {
+            currentSongUrl = null;
+            isSongLoading = false;
+            Get.find<PlayerController>().notifyPlayError(streamInfo.statusMSG);
+            playbackState.add(playbackState.value
+                .copyWith(processingState: AudioProcessingState.error));
+            return;
+          }
+          currentSongUrl = currMed.extras!['url'] = streamInfo.audio!.url;
+
+          await _playList.add(_createAudioSource(currMed));
+          isSongLoading = false;
+
+          // Normalize audio
+          if (loudnessNormalizationEnabled && GetPlatform.isAndroid) {
+            _normalizeVolume(streamInfo.audio!.loudnessDb);
+          }
+
+          await _player.play();
+        } catch (e) {
+          printERROR("setSourceNPlay failed: $e");
           currentSongUrl = null;
           isSongLoading = false;
-          Get.find<PlayerController>().notifyPlayError(streamInfo.statusMSG);
+          Get.find<PlayerController>()
+              .notifyPlayError("Unable to play this song");
           playbackState.add(playbackState.value
               .copyWith(processingState: AudioProcessingState.error));
-          return;
         }
-        currentSongUrl = currMed.extras!['url'] = streamInfo.audio!.url;
-
-        await _playList.add(_createAudioSource(currMed));
-        isSongLoading = false;
-
-        // Normalize audio
-        if (loudnessNormalizationEnabled && GetPlatform.isAndroid) {
-          _normalizeVolume(streamInfo.audio!.loudnessDb);
-        }
-
-        await _player.play();
         break;
 
       case 'toggleSkipSilence':

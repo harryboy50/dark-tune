@@ -14,6 +14,18 @@ class StreamProvider {
     try {
       final res = await yt.videos.streamsClient.getManifest(videoId);
       final audio = res.audioOnly;
+
+      // YouTube sometimes serves a manifest with zero playable audio-only
+      // formats (e.g. transient 403s on audio streams). Treat that the same
+      // as any other "can't play this" case instead of crashing later when
+      // something tries to read the (empty) audioFormats list.
+      if (audio.isEmpty) {
+        return StreamProvider(
+          playable: false,
+          statusMSG: "No playable audio stream found for this song",
+        );
+      }
+
       return StreamProvider(
           playable: true,
           statusMSG: "OK",
@@ -63,20 +75,28 @@ class StreamProvider {
     }
   }
 
-  Audio? get highestQualityAudio =>
-      audioFormats?.lastWhere((item) => item.itag == 251 || item.itag == 140,
+  // `audioFormats` being null OR empty must both mean "nothing to give
+  // back" here -- calling `.first` on an empty list throws StateError,
+  // which used to escape uncaught and leave the player stuck on
+  // "loading" forever (see StreamProvider.fetch / audio_handler.dart).
+  Audio? get highestQualityAudio => (audioFormats == null || audioFormats!.isEmpty)
+      ? null
+      : audioFormats!.lastWhere((item) => item.itag == 251 || item.itag == 140,
           orElse: () => audioFormats!.first);
 
-  Audio? get highestBitrateMp4aAudio =>
-      audioFormats?.lastWhere((item) => item.itag == 140 || item.itag == 139,
+  Audio? get highestBitrateMp4aAudio => (audioFormats == null || audioFormats!.isEmpty)
+      ? null
+      : audioFormats!.lastWhere((item) => item.itag == 140 || item.itag == 139,
           orElse: () => audioFormats!.first);
 
-  Audio? get highestBitrateOpusAudio =>
-      audioFormats?.lastWhere((item) => item.itag == 251 || item.itag == 250,
+  Audio? get highestBitrateOpusAudio => (audioFormats == null || audioFormats!.isEmpty)
+      ? null
+      : audioFormats!.lastWhere((item) => item.itag == 251 || item.itag == 250,
           orElse: () => audioFormats!.first);
 
-  Audio? get lowQualityAudio =>
-      audioFormats?.lastWhere((item) => item.itag == 249 || item.itag == 139,
+  Audio? get lowQualityAudio => (audioFormats == null || audioFormats!.isEmpty)
+      ? null
+      : audioFormats!.lastWhere((item) => item.itag == 249 || item.itag == 139,
           orElse: () => audioFormats!.first);
 
   Map<String, dynamic> get hmStreamingData {

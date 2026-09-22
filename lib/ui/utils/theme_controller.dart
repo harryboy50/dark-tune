@@ -420,33 +420,36 @@ extension HexColor on Color {
 class DarkTuneColors {
   DarkTuneColors._();
 
-  // ---- Dark theme ----
-  /// App background (deep violet-black)
-  static const Color background = Color(0xFF0B0813);
+  // ---- Dark theme (Spotify-style: near-black + green) ----
+  /// App background
+  static const Color background = Color(0xFF121212);
 
   /// Cards, dialogs, bottom sheets, popup menus
-  static const Color surface = Color(0xFF16112A);
+  static const Color surface = Color(0xFF181818);
 
   /// Chips, thumbnails placeholders, slightly raised containers
-  static const Color surfaceHigh = Color(0xFF201A3A);
+  static const Color surfaceHigh = Color(0xFF282828);
 
-  /// Main accent (nav indicator, snackbars, list actions, tiles)
-  static const Color accent = Color(0xFF6B4EE6);
+  /// Deep green used as background fill behind white text/icons
+  /// (nav indicator, snackbars, list actions, tiles, borders)
+  static const Color accent = Color(0xFF128A3E);
 
-  /// Light accent for progress bars, cursor, links & text buttons
-  static const Color accentLight = Color(0xFFA48DFF);
+  /// Bright "Spotify green" pop -- progress bars, slider, cursor,
+  /// selection, focus outline. Used on its own, not as a fill behind
+  /// white text (too light for that to stay readable).
+  static const Color accentLight = Color(0xFF1DB954);
 
   /// Secondary text
-  static const Color mutedText = Color(0xFFA9A4C0);
+  static const Color mutedText = Color(0xFFB3B3B3);
 
   // ---- Light theme ----
-  static const Color lightBackground = Color(0xFFF7F5FF);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightAccent = Color(0xFFD9CFFB);
-  static const Color lightAccentStrong = Color(0xFF5B3FD0);
+  static const Color lightBackground = Color(0xFFFFFFFF);
+  static const Color lightSurface = Color(0xFFF5F5F5);
+  static const Color lightAccent = Color(0xFFD7F2DF);
+  static const Color lightAccentStrong = Color(0xFF128A3E);
 
   // ---- Dynamic theme (before any song colour is picked) ----
-  static const Color dynamicSeed = Color(0xFF1A1033);
+  static const Color dynamicSeed = Color(0xFF1DB954);
 }
 
 enum ThemeType {
